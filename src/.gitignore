@@ -1,0 +1,41 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Arquivo de configuração sensível
+.env
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+
+# Arquivos de log
+*.log
+
+# Configuração local do usuário
+.memoscli/
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.bak
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Testes e cobertura
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Distribuição
+build/
+dist/
+*.egg-info/
+

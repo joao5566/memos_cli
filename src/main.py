@@ -1,6 +1,8 @@
 import typer
-from cli import config_app
+from cli import app as cli_app
 
 app = typer.Typer()
+app.add_typer(cli_app, name="memos")
 
-app.add_typer(config_app, name="config")
+if __name__ == "__main__":
+    app()

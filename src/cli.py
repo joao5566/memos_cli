@@ -9,9 +9,10 @@ config = ConfigManager()
 
 @app.command()
 #def list(limit: int = 10, offset: int = 0):
-def list(limit: int = 10, page_token: str = typer.Option(None, help="Token da próxima página")):
+def list(limit: int = 10, page_token: str = typer.Option(None, help="Token da próxima página"), tag:  list[str] = None):
     """Lista memos com paginação"""
-    memos,next_token = client.get(limit=limit,page_token=page_token)
+    actual_limit = 1000000000 if tag else limit
+    memos,next_token = client.get(limit=actual_limit,page_token=page_token)
     if not memos:
         print("nenhum memo encontrado")
         return
@@ -19,7 +20,10 @@ def list(limit: int = 10, page_token: str = typer.Option(None, help="Token da pr
     print(f"Mostrando {len(memos)} memos (limit={limit})\n")
     
     for i,memo in enumerate(memos, start=1):
-        print(f"{i}. {memo.get('content', '').strip()}")
+        memo_tags = memo.get("tags", [])
+        if tag is None or any(t in memo_tags for t in tag):
+            print(f"{i}. {memo.get('content', '',).strip()}")
+            #print(f"tags {memo.get("tags: ", ["baixar"])}")
 
     if next_token:
         print(f"\n➡️ Próxima página: use --page-token {next_token}")
@@ -36,7 +40,7 @@ def show():
     print(f"Seu token: {token}")
 
 @app.command()
-def set(url: str, token: str):
+def set(url: str =typer.Option(None) , token: str=typer.Option(None)):
     """Define configurações"""
     config.set("MEMOS_API_URL", url)
     config.set("MEMOS_TOKEN", token)

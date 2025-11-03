@@ -29,7 +29,11 @@ class ConfigManager:
         self.CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(self.CONFIG_PATH, "w") as f:
             json.dump(self.config, f, indent=2)
-
+    
+    def save(self):
+        """Salva as configurações no arquivo json"""
+        self._save_config()
+    
     def all(self):
         return {**self.config, **{k.lower(): v for k, v in os.environ.items() if k.startswith("MEMOS_")}}
         

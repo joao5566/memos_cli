@@ -8,7 +8,6 @@ client = MemosClient()
 config = ConfigManager()
 
 @app.command()
-#def list(limit: int = 10, offset: int = 0):
 def list(limit: int = 10, page_token: str = typer.Option(None, help="Token da próxima página"), tag:  list[str] = None):
     """Lista memos com paginação"""
     actual_limit = 1000000000 if tag else limit
@@ -46,4 +45,9 @@ def set(url: str =typer.Option(None) , token: str=typer.Option(None)):
     config.set("MEMOS_TOKEN", token)
     config.save()
     print("✅ Configurações salvas!")
+
+@app.command()
+def get_recent(days: int = 7):
+    client.print_recent_memos(days)
+
 

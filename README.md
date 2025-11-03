@@ -1,5 +1,3 @@
----
-
 ## Memos CLI
 
 **Memos CLI** é um cliente de terminal para o [Memos](https://usememos.com), feito em Python, que permite gerenciar suas notas diretamente do terminal com comandos estilo Git.

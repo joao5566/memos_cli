@@ -1,4 +1,6 @@
+from click import exceptions
 import requests
+from requests.models import Response
 from config import ConfigManager
 from datetime import datetime
 config = ConfigManager()
@@ -26,7 +28,7 @@ class MemosClient():
         return {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json"
-        }
+                }
 
     def get(self, limit=None, page_token=None):
         """
@@ -113,7 +115,7 @@ class MemosClient():
         memos_recentes.sort(key=lambda x: x.get("createTime", ""), reverse=True)
         return memos_recentes
 
-
+    
     def print_recent_memos(self, days=7):
         """Imprime memos recentes de forma bonita"""
         recent_memos = self.get_memos_recent(days)
@@ -166,3 +168,26 @@ class MemosClient():
                 print(f"\n{'─'*50}\n")
             else:
                 print(f"\n{'='*60}")
+    
+    def get_by_id(self, memo_id):
+        """Obtém um memo específico pelo ID"""
+        try:
+            url = f"{self.get_memos_url()}/{memo_id}"
+            headers = self.get_headers()
+            response = requests.get(url, headers=headers)
+
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"❌ Erro {response.status_code}: {response.text}")
+                return None
+
+        except requests.exceptions.RequestException as e:
+            print(f"🚨 Erro de conexão: {e}")
+            return None
+    def update_memo(self, memo_name: str, new_content: str):
+        url = f"{self.get_memos_url()}/{memo_name}"
+        payload = {"content": new_content}
+        res = requests.patch(url, headers=self.get_headers(), json=payload)
+        res.raise_for_status()
+        return res.json()

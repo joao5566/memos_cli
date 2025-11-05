@@ -191,3 +191,66 @@ class MemosClient():
         res = requests.patch(url, headers=self.get_headers(), json=payload)
         res.raise_for_status()
         return res.json()
+
+    
+    def criar_memo(self,content,visibility="PRIVATE",tags=None,pinned=False):
+        """
+        Cria um novo memo
+
+        Args:
+            conteudo (str): Texto do memo
+            visibility (str): "PUBLIC" ou "PRIVATE"
+            tags (list): Lista de tags
+            pinned (bool): Se deve fixar o memo
+
+        Returns:
+            dict: Memo criado ou None em caso de erro
+        """
+        if tags is None:
+            tags = []
+
+        payload = {
+                "content": content,
+                "visibility": visibility,
+                "tags":tags,
+                "pinned": pinned
+                }
+        
+        try:
+            response = requests.post(self.get_memos_url(),headers=self.get_headers(),json=payload)
+
+            if response.status_code == 200:
+                print("✅ Memo criado com sucesso!")
+                return response.json()
+            else:
+                print(f"❌ Erro ao criar memo: {response.status_code}")
+                print(f"📄 Detalhes: {response.text}")
+                return None
+        except requests.exceptions.RequestException as e:
+             print(f"🚨 Erro de conexão: {e}")
+             return None
+
+    def del_memo(self, id):
+        """
+        Exclui um memo específico
+
+        Args:
+            memo_name (str): ID do memo (ex: "memos/ID_UNICO")
+
+        Returns:
+            bool: True se sucesso, False se erro
+        """
+        dele_url = f"{self.get_memos_url()}/{id}"
+        
+        try:
+            response = requests.delete(dele_url,headers=self.get_headers())
+
+            if response.status_code == 200:
+                print("✅ Memo excluído com sucesso!")
+                return True
+            else:
+                print(f"❌ Erro ao excluir memo: {response.status_code}")
+                return False
+        except requests.exceptions.RequestException as e:
+            print(f"🚨 Erro de conexão: {e}")
+            return False

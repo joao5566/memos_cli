@@ -97,3 +97,28 @@ def edit(id):
         client.update_memo(id, new_content)
     else:
         print("ℹ️ Nenhuma alteração feita.")
+
+@app.command()
+def new_memo():
+    """cria um novo memo"""
+    content= ""
+    editor = config.get("MEMOS_EDITOR", os.getenv("EDITOR", "nano"))
+
+    with tempfile.NamedTemporaryFile(mode="w+",suffix=".md",delete=False) as tmp:
+        tmp.write(content)
+        tmp.flush()
+        temp_path = tmp.name
+   
+    # abre o editor
+    subprocess.call([editor,temp_path])
+
+
+    with open(temp_path,"r") as f:
+        new_content = f.read()
+    client.criar_memo(new_content)
+
+@app.command()
+def del_memo(id):
+    memo = client.get_by_id(id)
+    client.del_memo(id)
+    

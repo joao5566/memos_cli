@@ -119,6 +119,5 @@ def new_memo():
 
 @app.command()
 def del_memo(id):
-    memo = client.get_by_id(id)
     client.del_memo(id)
     
